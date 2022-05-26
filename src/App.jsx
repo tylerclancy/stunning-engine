@@ -1,44 +1,52 @@
-import { useState } from 'react'
-import logo from './logo.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [people, setPeople] = useState([]);
+
+  useEffect(() => {
+    const lastQuery = localStorage.getItem('lastQuery');
+    search(lastQuery);
+  }, []);
+
+  const search = async (q) => {
+    const response = await fetch(
+      'http://localhost:4000?' + new URLSearchParams({ q })
+    );
+
+    const data = await response.json();
+    // console.log(data);
+    setPeople(data);
+
+    localStorage.setItem('lastQuery', q);
+  };
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+      <h1>Search Profession</h1>
+
+      <input
+        type='text'
+        placeholder='Search'
+        onChange={(e) => search(e.target.value)}
+      />
+
+      <ul>
+      {people.map((person) => (
+        <Person key={person.id} {...person} />
+      ))}
+
+        {people.length === 0 && 'No people found.'}
+      </ul>
     </div>
+  )
+}
+
+function Person({ type, name, age }) {
+  return (
+    <li>
+      <strong>{type}</strong> {name} ({age} years old.)
+    </li>
   )
 }
 

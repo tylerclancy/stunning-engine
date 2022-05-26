@@ -20,7 +20,7 @@ const people = [...Array(250).keys()].map(id => {
 
 app.get('', (req, res) => {
   const q = req.query.q?.toLowerCase() || '';
-  const results = people.filter(profession => profession.type.toLowerCase().includes(q));
+  const results = people.filter(person => person.type.toLowerCase().includes(q));
 
   res.send(results);
 });
