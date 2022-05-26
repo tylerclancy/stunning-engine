@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-function App() {
+function usePersonSearch() {
   const [people, setPeople] = useState([]);
 
   useEffect(() => {
@@ -20,6 +20,12 @@ function App() {
 
     localStorage.setItem('lastQuery', q);
   };
+
+  return { search, people }
+}
+
+function App() {
+  const { search, people } = usePersonSearch();
 
   return (
     <div className="App">
